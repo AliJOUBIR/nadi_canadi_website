@@ -40,8 +40,8 @@ export async function getPosts(limit: number = 10): Promise<WPPost[]> {
     try {
         // _embed=true includes rich media like featured images and author info in the response
         const res = await fetch(`${WP_API_URL}/posts?_embed=true&per_page=${limit}`, {
-            // Revalidate every hour (3600 seconds) - standard ISR approach
-            next: { revalidate: 3600 },
+            // Revalidate every 30 seconds - fetch new content much more frequently
+            next: { revalidate: 30 },
         });
 
         if (!res.ok) {
@@ -62,7 +62,7 @@ export async function getPosts(limit: number = 10): Promise<WPPost[]> {
 export async function getPostBySlug(slug: string): Promise<WPPost | null> {
     try {
         const res = await fetch(`${WP_API_URL}/posts?slug=${slug}&_embed=true`, {
-            next: { revalidate: 3600 },
+            next: { revalidate: 30 },
         });
 
         if (!res.ok) {
