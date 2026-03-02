@@ -2,6 +2,8 @@ import { getPostBySlug, getPosts } from '@/lib/wordpress';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+export const revalidate = 30; // Revalidate the page every 30 seconds
+
 interface BlogPostProps {
     params: {
         slug: string;

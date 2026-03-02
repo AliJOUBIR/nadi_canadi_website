@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { getPosts, type WPPost } from '@/lib/wordpress';
 
+export const revalidate = 30; // Revalidate the page every 30 seconds
+
 export default async function BlogPage() {
     const posts = await getPosts();
 
