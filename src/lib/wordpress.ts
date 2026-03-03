@@ -38,9 +38,13 @@ export interface WPPost {
  */
 export async function getPosts(limit: number = 10): Promise<WPPost[]> {
     try {
+        // Appending a timestamp bypasses Pantheon's aggressive Varnish Edge Caching,
+        // guaranteeing Next.js receives the absolute freshest data from the database.
+        const bustCache = `&t=${new Date().getTime()}`;
+
         // _embed=true includes rich media like featured images and author info in the response
-        const res = await fetch(`${WP_API_URL}/posts?_embed=true&per_page=${limit}`, {
-            // Revalidate every 30 seconds - fetch new content much more frequently
+        const res = await fetch(`${WP_API_URL}/posts?_embed=true&per_page=${limit}${bustCache}`, {
+            // Revalidate every 30 seconds - standard ISR approach
             next: { revalidate: 30 },
         });
 
@@ -61,7 +65,8 @@ export async function getPosts(limit: number = 10): Promise<WPPost[]> {
  */
 export async function getPostBySlug(slug: string): Promise<WPPost | null> {
     try {
-        const res = await fetch(`${WP_API_URL}/posts?slug=${slug}&_embed=true`, {
+        const bustCache = `&t=${new Date().getTime()}`;
+        const res = await fetch(`${WP_API_URL}/posts?slug=${slug}&_embed=true${bustCache}`, {
             next: { revalidate: 30 },
         });
 
